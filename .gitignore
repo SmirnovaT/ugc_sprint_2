@@ -1,0 +1,26 @@
+# Environments
+.env
+env/
+.env/
+.venv
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+*.idea/*
+idea/
+__pycache__
+
+# Unit test / coverage reports
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+*.py,cover
+.pytest_cache/

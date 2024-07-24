@@ -20,12 +20,14 @@ async def validate_token(token: str) -> dict[str, str]:
     except jwt.exceptions.DecodeError as decode_error:
         ugc_logger.error(f"Error while JWT decoding: {decode_error}")
         raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED, detail="Неверный токен"
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="Неверный токен",
         )
     except jwt.ExpiredSignatureError:
         ugc_logger.error("Срок действия токена истек")
         raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED, detail="Срок действия токена истек"
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="Срок действия токена истек",
         )
     except ValueError as err:
         ugc_logger.error(f"Error while JWT decoding: {err}")
@@ -48,5 +50,6 @@ async def check_token_and_role(request: Request, roles: list) -> None:
     decoded_token = await validate_token(access_token)
     if decoded_token.get("user_role") not in roles:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN, detail="Нет прав для совершения действия"
+            status_code=HTTPStatus.FORBIDDEN,
+            detail="Нет прав для совершения действия",
         )

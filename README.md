@@ -1,6 +1,6 @@
-### ONLINE CINEMA SERVICE (UGC)
+# ONLINE CINEMA SERVICE (UGC)
 ___
-#### [Ссылка на репозиторий](https://github.com/SmirnovaT/ugc_sprint_2)
+## [Ссылка на репозиторий](https://github.com/SmirnovaT/ugc_sprint_2)
 ___
 
 Запуск приложения с docker compose

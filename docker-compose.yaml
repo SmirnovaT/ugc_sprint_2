@@ -1,0 +1,2 @@
+include:
+  - ./infra/mongodb/docker-compose.mongo.yaml

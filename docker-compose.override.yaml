@@ -1,0 +1,4 @@
+services:
+  mongos1:
+    ports:
+      - "27017:27017"

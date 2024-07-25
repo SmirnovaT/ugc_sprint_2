@@ -4,6 +4,8 @@ from fastapi.responses import ORJSONResponse
 
 from src.core.config import settings
 
+DEFAULT_PORT = 8000
+
 app = FastAPI(
     version="0.0.1",
     title=settings.project_name,
@@ -18,4 +20,4 @@ app = FastAPI(
 )
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=DEFAULT_PORT, reload=True)

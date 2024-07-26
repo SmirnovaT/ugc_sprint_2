@@ -4,7 +4,7 @@ import time
 import requests
 
 from app.src.core.config import settings
-from generator_events.events import (
+from generator_events.send_to_ugc import (
     generate_new_like,
     generate_new_like_for_review,
     generate_new_review,

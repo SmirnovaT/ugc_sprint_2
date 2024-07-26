@@ -1,16 +1,14 @@
 # ONLINE CINEMA SERVICE (UGC)
-___
 ## [Ссылка на репозиторий](https://github.com/SmirnovaT/ugc_sprint_2)
-___
 
-Запуск приложения с docker compose
+### Запуск приложения с docker compose
 ```
 docker-compose up --build
 or
 docker-compose up --build -d
 ```
 
-Запуск приложения для локальной разработки
+### Запуск приложения для локальной разработки
 ```
 1. cp .env_example .env
 2. python3.12 -m venv venv
@@ -21,3 +19,7 @@ docker-compose up --build -d
 7. uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+### Инициализация mongodb кластера
+```console
+docker compose exec mongos1 ./mongo-init.sh
+```

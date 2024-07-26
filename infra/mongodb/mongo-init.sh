@@ -14,7 +14,7 @@ rs.initiate({
 })
 EOF
 
-sleep 5
+sleep 10
 
 # иницилизируем replica set первого шарда
 echo "Configuring shard server replica set..."
@@ -29,8 +29,6 @@ rs.initiate({
 })
 EOF
 
-sleep 5
-
 # иницилизируем replica set второго шарда
 echo "Configuring shard server replica set..."
 mongosh --host mongors2n1:27017 <<EOF
@@ -44,7 +42,7 @@ rs.initiate({
 })
 EOF
 
-sleep 5
+sleep 10
 
 # добавляем шарды в кластер
 echo "Adding shards to the cluster..."
@@ -52,6 +50,19 @@ mongosh --host mongos1:27017 <<EOF
 sh.addShard("mongors1/mongors1n1")
 sh.addShard("mongors2/mongors2n1")
 sh.status()
+
+use ugc
+sh.enableSharding("ugc")
+
+db.createCollection("reviews")
+sh.shardCollection("ugc.reviews", {"film_id": "hashed"})
+
+db.createCollection("films")
+sh.shardCollection("ugc.films", {"_id": "hashed"})
+
+db.createCollection("users")
+sh.shardCollection("ugc.users", {"_id": "hashed"})
 EOF
+
 
 echo "MongoDB sharded cluster setup completed."

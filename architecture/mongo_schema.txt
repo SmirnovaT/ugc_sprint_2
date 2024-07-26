@@ -1,0 +1,48 @@
+film
+------
+{
+	_id: UUID фильма
+	average_score: double
+	scores: [
+		{
+			user_id: UUID
+			score: int
+            created_at: Date
+		}
+	]
+}
+
+
+user
+--------
+{
+	_id: UUID пользователя
+	scores: [
+		{
+			film_id: UUID
+			score: Int32
+            created_at: Date
+		}
+	]
+	bookmarks: list[film_id UUID]
+}
+
+
+review
+---------
+{
+    _id: UUID сгенерирует монга
+	user_id: UUID
+    film_id: UUID
+	text: str
+	user_score: int
+	date_posted: datetime
+	average_score: double
+	likes: 
+	[
+		{
+			user_id: UUID,
+			score: int
+		}
+	] 
+}

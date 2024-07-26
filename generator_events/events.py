@@ -57,7 +57,7 @@ def generate_new_review() -> dict:
         {
             "film_id": str(uuid.uuid4()),
             "user_id": str(uuid.uuid4()),
-            "text": str
+            "text": str,
             "date_posted": datetime
         },
     )

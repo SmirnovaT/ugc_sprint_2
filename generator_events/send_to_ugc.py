@@ -5,20 +5,18 @@ import requests
 
 from src.core.config import settings
 from generator_events.events import (
-    generate_click,
-    generate_film_quality,
-    generate_film_watched,
-    generate_page_view_time,
-    generate_search_filter,
+    generate_new_like,
+    generate_new_like_for_review,
+    generate_new_review,
+    generate_new_bookmark
 )
 from generator_events.jwt import create_access_and_refresh_tokens
 
 event_functions = [
-    generate_click,
-    generate_film_quality,
-    generate_film_watched,
-    generate_page_view_time,
-    generate_search_filter,
+    generate_new_like,
+    generate_new_like_for_review,
+    generate_new_review,
+    generate_new_bookmark,
 ]
 
 

@@ -77,6 +77,7 @@ jobs:
           Сreate new Pull Request 🔥
 
           Please review the changes and check the code: 
-          https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+          https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
           
           Pipeline status: ${{ needs.build.result }}

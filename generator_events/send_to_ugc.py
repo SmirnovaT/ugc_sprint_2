@@ -3,7 +3,7 @@ import time
 
 import requests
 
-from src.core.config import settings
+from app.src.core.config import settings
 from generator_events.events import (
     generate_new_like,
     generate_new_like_for_review,

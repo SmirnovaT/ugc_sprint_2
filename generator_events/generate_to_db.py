@@ -13,7 +13,7 @@ def generate_events(count: int, batch_size: int) -> Generator[list[dict], None, 
         batch = []
         for i in range(count):
             batch.append(events.generate_new_like())
-            batch.append(events.generate_new_bookmark())
+            # batch.append(events.generate_new_bookmark())
             if len(batch) == batch_size:
                 yield batch
                 batch = []

@@ -23,3 +23,7 @@ docker-compose up --build -d
 ```console
 docker compose exec mongos1 ./mongo-init.sh
 ```
+
+____________________________________________________________________________
+[Результаты тестирования MongoDB](research/mongo_db/result.md)
+

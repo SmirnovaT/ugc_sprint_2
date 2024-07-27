@@ -27,7 +27,10 @@ def generate_new_like() -> dict:
     event_data.update({
         "film_id": str(uuid.uuid4()),
         "user_id": str(uuid.uuid4()),
-        "score": fake.random_int(min=0, max=10)
+        "score": fake.random_int(min=0, max=10),
+        "created_at": fake.date_time_this_year(
+            before_now=True, after_now=False, tzinfo=timezone(timedelta(hours=3))
+        ).isoformat(),
     })
     return event_data
 

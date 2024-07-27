@@ -23,6 +23,7 @@ wemake-python-styleguide = "^0.19.2"
 lxml = "^5.2.2"
 flake8-html = "^0.4.3"
 flake8 = "^7.1.0"
+faker = "^26.0.0"
 
 
 [build-system]

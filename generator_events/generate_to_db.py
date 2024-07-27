@@ -1,5 +1,5 @@
 from typing import Generator
-from generate_events import events
+from . import events
 
 import faker
 

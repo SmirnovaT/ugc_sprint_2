@@ -26,4 +26,5 @@ docker compose exec mongos1 ./mongo-init.sh
 
 ____________________________________________________________________________
 [Результаты тестирования MongoDB](research/mongo_db/result.md)
+[Результаты тестирования Postgres](research/check_postgres/result.md)
 

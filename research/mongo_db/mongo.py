@@ -39,8 +39,17 @@ def insert_document(*, collection: Collection, data: dict) -> None:
     collection.insert_one(data)
 
 
-@time_it(TOTAL=1)
-def get_by_id(id_: UUID, field: str) -> dict | list:
+@time_it(TOTAL=TOTAL)
+def get_events(users_collection):
+    """Получение пачки записей"""
+
+    documents = users_collection.find().limit(TOTAL)
+    return documents
+
+
+def get_by_id(id_: UUID, field: str, users_collection) -> dict | list:
+    """Получение записи по id"""
+
     data = users_collection.find_one({"_id": id_})
     if data:
         return data.get(field, [])
@@ -50,6 +59,7 @@ def get_by_id(id_: UUID, field: str) -> dict | list:
     return data
 
 
+@time_it(TOTAL=1)
 def get_bookmarks_for_user(users_collection) -> list[str]:
     """Получение списка закладок пользователя"""
 
@@ -67,11 +77,12 @@ def get_bookmarks_for_user(users_collection) -> list[str]:
 
     insert_document(collection=users_collection, data=db_data)
 
-    bookmarks = get_by_id(user_id, "bookmarks")
+    bookmarks = get_by_id(user_id, "bookmarks", users_collection)
 
     return bookmarks
 
 
+@time_it(TOTAL=1)
 def get_likes_for_user(users_collection: dict) -> list[dict]:
     """Получение списка лайков пользователя"""
 
@@ -94,7 +105,7 @@ def get_likes_for_user(users_collection: dict) -> list[dict]:
 
     insert_document(collection=users_collection, data=db_data)
 
-    likes = get_by_id(user_id, "scores")
+    likes = get_by_id(user_id, "scores", users_collection)
 
     return likes
 
@@ -106,6 +117,10 @@ if __name__ == "__main__":
 
     insert_many_documents(users_collection, event_generator)
 
+    get_events(users_collection)
+
     get_bookmarks_for_user(users_collection)
 
     get_likes_for_user(users_collection)
+
+    users_collection.delete_many({})

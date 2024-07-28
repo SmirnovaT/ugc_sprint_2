@@ -1,13 +1,28 @@
 from pathlib import Path
 
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class MongoSettings(BaseModel):
+    """Mongo DB settings"""
+
+    url: str = "mongodb://localhost:27017"
 
 
 class Settings(BaseSettings):
     """Project settings"""
 
     project_name: str
+    default_host: str
+    default_port: str
+
+    page_number: int = 1
+    page_size: int = 50
+
     public_key: str
+
+    mongo: MongoSettings = MongoSettings()
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parent.parent.parent.parent / ".env",

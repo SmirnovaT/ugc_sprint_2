@@ -1,10 +1,20 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from motor.motor_asyncio import AsyncIOMotorClient
 
+from src.api.v1 import reviews
 from src.core.config import settings
+from src.db import mongo
 
-DEFAULT_PORT = 8000
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    mongo.mongo = AsyncIOMotorClient(settings.mongo.url)
+    yield
+
 
 app = FastAPI(
     version="0.0.1",
@@ -13,11 +23,19 @@ app = FastAPI(
     docs_url="/ugc/api/openapi",
     openapi_url="/ugc/api/openapi.json",
     default_response_class=ORJSONResponse,
+    lifespan=lifespan,
     contact={
         "name": "Amazing python team",
         "email": "amazaingpythonteam@fake.com",
     },
 )
 
+app.include_router(reviews.router, prefix='/ugc/v1/reviews', tags=['reviews'])
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=DEFAULT_PORT, reload=True)
+    uvicorn.run(
+        "main:app",
+        host=settings.default_host,
+        port=settings.default_port,
+        reload=True,
+    )

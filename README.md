@@ -3,9 +3,9 @@
 
 ### Запуск приложения с docker compose
 ```
-docker-compose up --build
+docker compose up --build
 or
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 ### Запуск приложения для локальной разработки

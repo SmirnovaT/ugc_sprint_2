@@ -4,8 +4,8 @@ import jwt
 from fastapi import Request
 from fastapi.exceptions import HTTPException
 
-from app.src.core.config import settings
-from app.src.core.logger import ugc_logger
+from src.core.config import settings
+from src.core.logger import ugc_logger
 
 
 async def validate_token(token: str) -> dict[str, str]:

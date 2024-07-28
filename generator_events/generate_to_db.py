@@ -1,7 +1,8 @@
 from typing import Generator
-from . import events
 
 import faker
+
+import events
 
 fake = faker.Faker()
 

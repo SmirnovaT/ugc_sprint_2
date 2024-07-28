@@ -56,51 +56,54 @@ def insert_events(values):
 @time_it(TOTAL=TOTAL)
 def get_bookmarks_for_user() -> list[str]:
     """Получение списка закладок пользователя"""
+    bookmarks = []
+    for _ in range(TOTAL):
+        bookmark_data = generate_new_bookmark()
 
-    bookmark_data = generate_new_bookmark()
+        film_id = bookmark_data["film_id"]
+        user_id = bookmark_data["user_id"]
 
-    film_id = bookmark_data["film_id"]
-    user_id = bookmark_data["user_id"]
+        values = {
+            "_id": user_id,
+            "bookmarks": [film_id],
+        }
 
-    values = {
-        "_id": user_id,
-        "bookmarks": [film_id],
-    }
+        values_to_insert = f"('{values['_id']}', '{str(values).replace('\'', '\"')}')"
+        cursor.execute(f"""INSERT INTO public.users (user_id, data)
+        VALUES {values_to_insert}""")
 
-    values_to_insert = f"('{values['_id']}', '{str(values).replace('\'', '\"')}')"
-    cursor.execute(f"""INSERT INTO public.users (user_id, data)
-                VALUES {values_to_insert}""")
-
-    bookmarks = get_by_id(user_id, "bookmarks")
+        bookmarks.append(get_by_id(user_id, "bookmarks"))
 
     return bookmarks
 
 @time_it(TOTAL=TOTAL)
 def get_likes_for_user() -> list[dict]:
     """Получение списка лайков пользователя"""
+    likes = []
+    for _ in range(TOTAL):
 
-    like_data = generate_new_like()
+        like_data = generate_new_like()
 
-    user_id = like_data["user_id"]
+        user_id = like_data["user_id"]
 
-    values = {
-        "_id": user_id,
-        "timestamp": like_data["timestamp"],
-        "fingerprint": like_data["fingerprint"],
-        "scores": [
-            {
-                "film_id": like_data["film_id"],
-                "score": like_data["score"],
-                "created_at": like_data["created_at"],
-            }
-        ],
-    }
+        values = {
+            "_id": user_id,
+            "timestamp": like_data["timestamp"],
+            "fingerprint": like_data["fingerprint"],
+            "scores": [
+                {
+                    "film_id": like_data["film_id"],
+                    "score": like_data["score"],
+                "   created_at": like_data["created_at"],
+                }
+            ],
+        }
 
-    values_to_insert = f"('{values['_id']}', '{str(values).replace('\'', '\"')}')"
-    cursor.execute(f"""INSERT INTO public.users (user_id, data)
+        values_to_insert = f"('{values['_id']}', '{str(values).replace('\'', '\"')}')"
+        cursor.execute(f"""INSERT INTO public.users (user_id, data)
                     VALUES {values_to_insert}""")
 
-    likes = get_by_id(user_id, "scores")
+        likes.append(get_by_id(user_id, "scores"))
 
     return likes
 

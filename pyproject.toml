@@ -25,6 +25,7 @@ flake8-html = "^0.4.3"
 flake8 = "^7.1.0"
 faker = "^26.0.0"
 pymongo = "^4.8.0"
+psycopg2-binary = "^2.9.9"
 
 
 [build-system]

@@ -1,6 +1,6 @@
 import uuid
 
-from datetime import timezone, timedelta, datetime
+from datetime import datetime, timedelta, timezone
 
 import faker
 
@@ -36,7 +36,7 @@ def generate_new_like() -> dict:
 
 
 def generate_new_like_for_review() -> dict:
-    """Добавление нового лайка для реыью """
+    """Добавление нового лайка для ревью """
 
     event_data = generate_event()
     event_data.update({

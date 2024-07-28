@@ -9,7 +9,6 @@ import jwt
 from src.core.config import settings
 
 
-
 def calculate_current_date_and_time() -> Tuple[dt, int]:
     """Calculates current date and time"""
 
@@ -39,7 +38,7 @@ def calculate_iat_and_exp_tokens() -> Tuple[int, int, int]:
 
 
 def create_access_and_refresh_tokens(
-    user_login: str, user_role: str
+        user_login: str, user_role: str
 ) -> Tuple[str, str]:
     """Creates a pair of access and refresh tokens"""
 
@@ -101,6 +100,5 @@ def validate_token(token: str) -> dict[str, str]:
 
     except ValueError as err:
         logging.error(f"Error while JWT decoding: {err}")
-
 
     return decoded_token

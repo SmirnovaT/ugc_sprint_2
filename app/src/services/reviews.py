@@ -101,6 +101,8 @@ class ReviewService:
             )
 
     async def check_if_review_exist(self, movie_id, user_id):
+        """Check if review exists"""
+
         return await self.mongo_db[self.collection_name].find_one(
             {"film_id": movie_id, "user_id": user_id},
         )

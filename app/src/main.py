@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from src.api.v1 import reviews
+from src.api.v1 import bookmarks, reviews
 from src.core.config import settings
 from src.db import mongo
 
@@ -30,7 +30,9 @@ app = FastAPI(
     },
 )
 
-app.include_router(reviews.router, prefix='/ugc/v1/reviews', tags=['reviews'])
+app.include_router(bookmarks.router, prefix="/ugc/v1/bookmarks", tags=["bookmark"])
+app.include_router(reviews.router, prefix="/ugc/v1/reviews", tags=["reviews"])
+
 
 if __name__ == "__main__":
     uvicorn.run(

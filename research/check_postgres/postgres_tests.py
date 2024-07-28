@@ -7,7 +7,7 @@ from generator_events.generate_to_db import generate_events
 from generator_events.events import generate_new_bookmark, generate_new_like
 from generator_events.test_utils.utils import time_it
 
-TOTAL =100000
+TOTAL = 100000
 BATCH_SIZE = 1000
 
 dsn = {
@@ -19,6 +19,7 @@ dsn = {
     'options': '-c search_path=content',
 }
 
+
 @contextmanager
 def conn_context(dsn: dict):
     conn_pg = psycopg2.connect(**dsn)
@@ -26,6 +27,7 @@ def conn_context(dsn: dict):
         yield conn_pg
     finally:
         conn_pg.close()
+
 
 @time_it(TOTAL=TOTAL)
 def transform_data(event_generator, insert_events):
@@ -53,6 +55,7 @@ def insert_events(values):
     cursor.execute(f"""INSERT INTO public.users (user_id, data)
             VALUES {values}""")
 
+
 @time_it(TOTAL=TOTAL)
 def get_bookmarks_for_user() -> list[str]:
     """Получение списка закладок пользователя"""
@@ -76,12 +79,12 @@ def get_bookmarks_for_user() -> list[str]:
 
     return bookmarks
 
+
 @time_it(TOTAL=TOTAL)
 def get_likes_for_user() -> list[dict]:
     """Получение списка лайков пользователя"""
     likes = []
     for _ in range(TOTAL):
-
         like_data = generate_new_like()
 
         user_id = like_data["user_id"]
@@ -94,7 +97,7 @@ def get_likes_for_user() -> list[dict]:
                 {
                     "film_id": like_data["film_id"],
                     "score": like_data["score"],
-                "   created_at": like_data["created_at"],
+                    "   created_at": like_data["created_at"],
                 }
             ],
         }
@@ -112,8 +115,10 @@ def get_likes_for_user() -> list[dict]:
 def get_events(limit):
     cursor.execute(f"""SELECT * FROM public.users LIMIT {limit}""")
 
+
 def get_by_id(id, key):
     cursor.execute(f"""SELECT data ->> '{key}' FROM public.users WHERE user_id = '{id}'""")
+
 
 if __name__ == "__main__":
     event_generator = generate_events(count=TOTAL, batch_size=BATCH_SIZE)

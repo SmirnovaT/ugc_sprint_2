@@ -75,7 +75,7 @@ def get_bookmarks_for_user() -> list[str]:
 
     return bookmarks
 
-
+@time_it(TOTAL=TOTAL)
 def get_likes_for_user() -> list[dict]:
     """Получение списка лайков пользователя"""
 

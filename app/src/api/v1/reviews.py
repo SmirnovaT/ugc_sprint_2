@@ -1,4 +1,3 @@
-from http import HTTPStatus
 from typing import List
 
 from fastapi import APIRouter, Depends, Request, status
@@ -64,7 +63,7 @@ async def update_review(
 
 @router.delete(
     '/{review_id}',
-    status_code=HTTPStatus.NO_CONTENT,
+    status_code=status.HTTP_204_NO_CONTENT,
     description="Remove review for the film",
     response_description="Removed review for the film",
 )

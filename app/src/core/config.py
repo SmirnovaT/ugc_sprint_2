@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     project_name: str
     default_host: str
-    default_port: str
+    default_port: int
 
     page_number: int = 1
     page_size: int = 50
@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     public_key: str
 
     mongo: MongoSettings = MongoSettings()
+
+    sentry_sdk_dsn: str
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parent.parent.parent.parent / ".env",

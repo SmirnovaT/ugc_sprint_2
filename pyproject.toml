@@ -22,7 +22,7 @@ pyjwt = "^2.8.0"
 python = "^3.10"
 uvicorn = "^0.29.0"
 wemake-python-styleguide = "^0.19.2"
-sentry-sdk = {extras = ["fastapi"], version = "^2.11.0"}
+sentry-sdk = { extras = ["fastapi"], version = "^2.11.0" }
 motor = "^3.5.1"
 asyncpg = "^0.29.0"
 

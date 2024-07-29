@@ -41,7 +41,6 @@ app.include_router(reviews.router, prefix="/ugc/v1/reviews", tags=["reviews"])
 app.include_router(likes.router, prefix="/ugc/v1/likes", tags=["likes"])
 app.include_router(bookmarks.router, prefix="/ugc/v1/bookmarks", tags=["bookmark"])
 
-
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",

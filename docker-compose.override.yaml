@@ -6,3 +6,19 @@ services:
   app:
     ports:
       - "8000:8000"
+
+  nginx:
+    ports:
+      - "8080:80"
+
+  logstash:
+    ports:
+      - "5044:5044/udp"
+
+  elasticsearch:
+    ports:
+      - "9200:9200"
+
+  kibana:
+    ports:
+      - "5601:5601"

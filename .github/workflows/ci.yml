@@ -51,15 +51,18 @@ jobs:
           name: reports-${{ matrix.python-version }}
           path: reports/
 
+      - name: Setup environment variables
+        run: |
+          echo "PROJECT_NAME=${{ secrets.PROJECT_NAME }}" >> .env
+          echo "PUBLIC_KEY=${{ secrets.PUBLIC_KEY }}" >> .env
+          echo "DEFAULT_HOST=${{ secrets.DEFAULT_HOST }}" >> .env
+          echo "DEFAULT_PORT=${{ secrets.DEFAULT_PORT }}" >> .env
+          echo "MONGO__URL=${{ secrets.MONGO__URL }}" >> .env
 
-#      - name: Run tests
-#        run: |
-#            cd tests/
-#            docker-compose up -d
-#            make
-#            pip install -r requirements.txt
-#            pytest -v -s -p no:warning
 
+      - name: Run tests
+        run: |
+          cd tests && docker-compose up -d
 
   notification:
     name: Telegram Notification

@@ -1,0 +1,8 @@
+services:
+  test_mongodb:
+    ports:
+      - "27017:27017"
+
+  api:
+    ports:
+      - "8000:8000"

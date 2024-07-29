@@ -1,9 +1,8 @@
 FROM python:3.11-slim
 
-EXPOSE 8000
+WORKDIR /tests/
 
-WORKDIR /opt/app
-
+COPY poetry.lock pyproject.toml /tests/
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -13,12 +12,10 @@ ENV POETRY_NO_INTERACTION 1
 
 RUN  pip install --upgrade pip && pip install poetry==1.8.3
 
-COPY ../pyproject.toml ../poetry.lock ./
+RUN poetry config virtualenvs.create false && poetry install
 
-RUN poetry install --only main,prod
+COPY . .
 
-COPY ./app .
+RUN chmod u+x commands.sh
 
-RUN chmod +x ./entrypoint.sh
-
-ENTRYPOINT ["/opt/app/entrypoint.sh"]
+CMD ["/bin/sh", "/tests/commands.sh"]

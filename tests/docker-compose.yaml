@@ -1,0 +1,36 @@
+services:
+
+  test_mongodb:
+    container_name: test_mongodb
+    image: mongo
+    restart: unless-stopped
+    volumes:
+      - ./mongo.sh:/mongo.sh
+    networks:
+      - testdb
+
+  api:
+    container_name: api
+    build:
+      context: ..
+      dockerfile: ./app/Dockerfile
+    restart: always
+    env_file:
+      - ../.env
+    depends_on:
+      - test_mongodb
+    networks:
+      - testdb
+
+  test:
+    container_name: test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - testdb
+
+networks:
+  testdb:
+
+

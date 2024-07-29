@@ -2,3 +2,7 @@ services:
   mongos1:
     ports:
       - "27017:27017"
+
+  app:
+    ports:
+      - "8000:8000"

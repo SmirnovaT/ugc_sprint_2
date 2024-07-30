@@ -64,6 +64,9 @@ jobs:
         run: |
           cd tests && docker-compose up -d
 
+      - name: Stop containers
+        run: docker-compose down
+
   notification:
     name: Telegram Notification
     runs-on: ubuntu-latest

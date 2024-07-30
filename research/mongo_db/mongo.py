@@ -56,8 +56,6 @@ def get_by_id(id_: UUID, field: str, users_collection) -> dict | list:
     else:
         return []
 
-    return data
-
 
 @time_it(TOTAL=1)
 def get_bookmarks_for_user(users_collection) -> list[str]:

@@ -65,7 +65,8 @@ jobs:
           cd tests && docker-compose up -d
 
       - name: Stop containers
-        run: docker-compose down
+        run: |
+          cd tests && docker-compose down
 
   notification:
     name: Telegram Notification

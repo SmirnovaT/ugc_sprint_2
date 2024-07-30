@@ -4,10 +4,8 @@ from typing import List
 from fastapi import APIRouter, Depends, Request, status
 
 from src.api.v1.schemas import Review, ReviewFromDB, Pagination
-from src.core.constants import PERMISSIONS
 from src.services.reviews import ReviewService
 from src.services.reviews import get_review_service
-from src.utils.jwt_and_roles import check_token_and_role
 from src.utils.pagination import Paginator
 
 router = APIRouter()

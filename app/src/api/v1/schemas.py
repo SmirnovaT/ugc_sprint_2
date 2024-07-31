@@ -2,7 +2,6 @@ from datetime import datetime
 
 import orjson
 from pydantic import BaseModel, Field
-from typing import List, Optional
 
 from src.utils.json import orjson_dumps
 
@@ -19,29 +18,33 @@ class BaseUserEventsModel(BaseModel):
 
 
 class Like(BaseUserEventsModel):
-    user_id: str = Field(..., description="user id")
-    score: int = Field(..., description="likes score")
+    user_id: str | None
+    score: int | None
 
 
 class Review(BaseUserEventsModel):
-    user_id: str = Field(..., description="user id")
-    film_id: str = Field(..., description="film id")
-    text: str = Field(..., description="review text")
-    user_score: int = Field(..., description="user score")
+    user_id: str
+    film_id: str
+    text: str
+    user_score: int
 
 
 class ReviewFromDB(Review):
-    date_posted: datetime = Field(default_factory=datetime.now, description="when review was added")
-    average_score: float = Field(0.0, description="average score")
-    likes: List[Like] = Field(default_factory=list, description="list of likes")
+    date_posted: datetime = Field(default_factory=datetime.now)
+    average_score: float = 0.0
+    likes: list[Like] = []
 
 
 class FilmScore(BaseUserEventsModel):
-    film_id: str = Field(..., description="film id")
-    score: int = Field(..., description="film score")
-    created_at: datetime = Field(default_factory=datetime.now, description="when score was added")
+    film_id: str
+    score: int
+    created_at: datetime = Field(default_factory=datetime.now)
 
 
 class User(BaseUserEventsModel):
-    scores: Optional[FilmScore] = Field(default_factory=list, description="list of film scores")
-    bookmarks: Optional[list] = Field(default_factory=list, description="list of bookmarks")
+    scores: list[FilmScore] = []
+    bookmarks: list = []
+
+
+class BookmarksForUser(BaseUserEventsModel):
+    bookmarks: list | None = None

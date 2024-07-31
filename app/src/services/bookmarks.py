@@ -1,10 +1,9 @@
 from http import HTTPStatus
 from functools import lru_cache
 
-from bson.objectid import ObjectId
 from fastapi import HTTPException
-from fastapi.encoders import jsonable_encoder
-from motor.motor_asyncio import AsyncIOMotorDatabase
+from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
+from starlette.responses import JSONResponse
 
 from src.core.logger import ugc_logger
 from src.db.mongo import get_mongo_db
@@ -16,34 +15,50 @@ class UserService:
     def __init__(self, mongo_db: AsyncIOMotorDatabase):
         self.mongo_db = mongo_db
         self.collection_name = "users"
+        self.collection: AsyncIOMotorCollection = self.mongo_db[self.collection_name]
 
-    async def add_bookmark(self, user_id, user_data):
+    async def add_bookmark(self, user_id, film_id):
         """Add bookmark for movie"""
 
-        is_user_exist = await self.check_if_user_exist(user_id)
-        if not is_user_exist:
-            raise HTTPException(
-                status_code=HTTPStatus.NOT_FOUND,
-                detail=f"User with id {user_id} doesnt exist")
+        user_data = await self.check_if_user_exist(user_id)
+        if not user_data:
+            try:
+                await self.mongo_db[self.collection_name].insert_one(
+                    {"_id": user_id, "bookmarks": [film_id]}
+                )
+            except Exception as exc:
+                ugc_logger.error(f"Error while adding bookmark for {user_id}: {exc}")
 
-        bookmark_data = jsonable_encoder(user_data)
+                raise HTTPException(
+                    status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                    detail=f"Error while adding bookmark for {user_id}",
+                )
+        else:
+            try:
+                bookmarks = user_data.get("bookmarks")
+                if not film_id in bookmarks:
+                    bookmarks.append(film_id)
 
-        try:
-            bookmark_result = await self.mongo_db[self.collection_name].update_one(
-                {"_id": ObjectId(user_id)}, {"$set": bookmark_data},
-            )
+                    await self.mongo_db[self.collection_name].update_one(
+                        {"_id": user_id}, {"$set": {"bookmarks": bookmarks}}
+                    ),
+                else:
+                    return JSONResponse(
+                        status_code=HTTPStatus.CONFLICT,
+                        content="This movie is already in bookmarks",
+                    )
 
-        except Exception as exc:
-            ugc_logger.error(f"Error while adding bookmark for {user_id}: {exc}")
+            except Exception as exc:
+                ugc_logger.error(f"Error while adding bookmark for {user_id}: {exc}")
 
-            raise HTTPException(
-                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while adding bookmark for {user_id}")
+                raise HTTPException(
+                    status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                    detail=f"Error while adding bookmark for {user_id}",
+                )
 
-        if bookmark_result.modified_count == 1:
-            return await self.mongo_db[self.collection_name].find_one(
-                {"_id": ObjectId(user_id)},
-            )
+        return await self.mongo_db[self.collection_name].find_one(
+            {"_id": user_id},
+        )
 
     async def delete_bookmark(self, user_id, film_id):
         """Remove bookmark"""
@@ -52,7 +67,8 @@ class UserService:
         if not user_data:
             raise HTTPException(
                 status_code=HTTPStatus.NOT_FOUND,
-                detail=f"User with id {user_id} doesnt exist")
+                detail=f"User with id {user_id} doesnt exist",
+            )
 
         current_bookmarks = user_data.get("bookmarks")
 
@@ -61,11 +77,13 @@ class UserService:
         except ValueError:
             raise HTTPException(
                 status_code=HTTPStatus.NOT_FOUND,
-                detail=f"No such bookmark for {user_id}")
+                detail=f"No such bookmark for {user_id}",
+            )
 
         try:
-            bookmark_result = await self.mongo_db[self.collection_name].update_one(
-                {"_id": ObjectId(user_id)}, {"$set": user_data},
+            await self.mongo_db[self.collection_name].update_one(
+                {"_id": user_id},
+                {"$set": {"bookmarks": current_bookmarks}},
             )
 
         except Exception as exc:
@@ -73,12 +91,23 @@ class UserService:
 
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while removing bookmark for {user_id}")
+                detail=f"Error while removing bookmark for {user_id}",
+            )
+
+    async def get_bookmarks(self, user_id):
+        """Get bookmarks"""
+        user_data = await self.check_if_user_exist(user_id)
+        if not user_data:
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND,
+                detail=f"User with id {user_id} doesnt exist",
+            )
+        else:
+            return await self.mongo_db[self.collection_name].find_one({"_id": user_id})
 
     async def check_if_user_exist(self, user_id):
         """Check if user exists"""
-
-        return await self.mongo_db[self.collection_name].find_one({"_id": ObjectId(user_id)})
+        return await self.mongo_db[self.collection_name].find_one({"_id": user_id})
 
 
 @lru_cache()

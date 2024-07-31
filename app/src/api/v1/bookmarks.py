@@ -48,7 +48,7 @@ async def delete_bookmark(
     description="Get bookmarks for user",
     response_description="Received books for the user",
 )
-async def get_bookmark(
+async def get_bookmarks(
     request: Request,
     user_id: str,
     service: UserService = Depends(get_user_service),

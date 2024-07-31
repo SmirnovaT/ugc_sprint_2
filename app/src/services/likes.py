@@ -28,7 +28,7 @@ class LikeService:
                 start = (page_number - 1) * per_page
                 finish = start + per_page
                 if finish >= len(film["scores"]) and start == 0:
-                    like_list = film["scores"][start:]
+                    like_list = film["scores"]
                 elif finish >= len(film["scores"]):
                     like_list = film["scores"][start:]
                 else:

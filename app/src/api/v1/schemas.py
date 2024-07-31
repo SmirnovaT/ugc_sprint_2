@@ -2,7 +2,6 @@ from datetime import datetime
 
 import orjson
 from pydantic import BaseModel, Field
-from typing import List
 
 from src.utils.json import orjson_dumps
 
@@ -32,6 +31,21 @@ class Review(BaseUserEventsModel):
 
 
 class ReviewFromDB(Review):
-    date_posted: datetime = Field(default_factory=datetime.now, description="when review was added")
-    average_score: float = Field(0.0, description="average score")
-    likes: List[Like] = Field(default_factory=list, description="list of likes")
+    date_posted: datetime = Field(default_factory=datetime.now)
+    average_score: float = 0.0
+    likes: list[Like] = []
+
+
+class FilmScore(BaseUserEventsModel):
+    film_id: str
+    score: int
+    created_at: datetime = Field(default_factory=datetime.now)
+
+
+class User(BaseUserEventsModel):
+    scores: list[FilmScore] = []
+    bookmarks: list[str] = []
+
+
+class BookmarksForUser(BaseUserEventsModel):
+    bookmarks: list[str] = []

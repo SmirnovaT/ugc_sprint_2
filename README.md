@@ -24,6 +24,14 @@ docker compose up --build -d
 docker compose exec mongos1 ./mongo-init.sh
 ```
 
+### Запуск тестов
+
+Изменить в корне проекта в.env хост БД на test_mongodb
+```
+1. cd tests
+2. docker-compose up --build
+
+```
 ____________________________________________________________________________
 [Результаты тестирования MongoDB](research/mongo_db/result.md)
 

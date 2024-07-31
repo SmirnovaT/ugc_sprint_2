@@ -163,7 +163,6 @@ class LikeService:
         # like_data = jsonable_encoder(data)
         film_id = like_data.film_id
         user_id = like_data.user_id
-        score = like_data.score
 
         film = await self.mongo_db[self.collection_name].find_one(
             {"_id": film_id},
@@ -180,9 +179,8 @@ class LikeService:
 
                 if not like["user_id"] == user_id:
                     new_likes_list.append(like)
-                    like["score"] = score
-                    summ += score
-            film["average_score"] = summ / len(film["scores"])
+                    summ += like["score"]
+            film["average_score"] = summ / len(new_likes_list)
             film["scores"] = new_likes_list
 
             try:

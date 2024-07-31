@@ -22,7 +22,7 @@ class LikeService:
 
         try:
             film = await self.mongo_db[self.collection_name].find_one(
-                {'_id': film_id},)
+            {'_id': film_id}, )
             print("Film: ", film)
             if film is not None:
                 result = film["scores"]#.skip((page_number - 1) * per_page).limit(per_page)
@@ -64,7 +64,7 @@ class LikeService:
                 new_data = await self.mongo_db[self.collection_name].insert_one(film)
                 return await self.mongo_db[self.collection_name].find_one({'_id': new_data.inserted_id})
             except Exception as exc:
-                ugc_logger.error(f"Error while adding review by {user_id} for movie {film_id}: {exc}")
+                ugc_logger.error(f"Error while adding like by {user_id} for movie {film_id}: {exc}")
 
                 raise HTTPException(
                     status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -86,12 +86,46 @@ class LikeService:
                 new_data = await self.mongo_db[self.collection_name].replace_one({'_id': film_id}, film, upsert = True)
                 return await self.mongo_db[self.collection_name].find_one({'_id': film_id})
             except Exception as exc:
-                ugc_logger.error(f"Error while adding review by {user_id} for movie {film_id}: {exc}")
+                ugc_logger.error(f"Error while adding like by {user_id} for movie {film_id}: {exc}")
 
                 raise HTTPException(
                     status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
                     detail=f"Error while adding like by {user_id} for movie {film_id}")
 
+    async def update(self, like_data):
+        """Add like for movie"""
+
+        #like_data = jsonable_encoder(data)
+        film_id = like_data.film_id
+        user_id = like_data.user_id
+        score = like_data.score
+
+        film = await self.mongo_db[self.collection_name].find_one(
+            {'_id': film_id}, )
+        if film is None:
+                raise HTTPException(
+                    status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                    detail=f"Error while updating like by {user_id} for movie {film_id}. Film does not exist")
+        else:
+            summ=0
+            for like in film["scores"]:
+
+                if like["user_id"] == user_id:
+                    like["score"] = score
+                    summ += score
+                else:
+                    summ += like["score"]
+            film["average_score"] = summ/ len(film["scores"])
+
+            try:
+                new_data = await self.mongo_db[self.collection_name].replace_one({'_id': film_id}, film, upsert = True)
+                return await self.mongo_db[self.collection_name].find_one({'_id': film_id})
+            except Exception as exc:
+                ugc_logger.error(f"Error while adding like by {user_id} for movie {film_id}: {exc}")
+
+                raise HTTPException(
+                    status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                    detail=f"Error while adding like by {user_id} for movie {film_id}")
 @lru_cache()
 def get_like_service():
     return LikeService(get_mongo_db())

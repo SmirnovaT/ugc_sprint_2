@@ -17,8 +17,8 @@ async def add_like(like: Like_with_film_id, service: LikeService = Depends(get_l
     return await service.add(like)
 
 @router.put("/")
-async def update_like():
-    pass
+async def update_like(like: Like_with_film_id, service: LikeService = Depends(get_like_service)):
+    return await service.update(like)
 
 @router.delete("/")
 async def delete_like():

@@ -8,6 +8,15 @@ filebeat.inputs:
     add_error_key: true
   tags: ['nginx']
 
+- type: filestream
+  enabled: true
+  paths:
+    - /var/log/ugc_api/*
+  json:
+    keys_under_root: true
+    add_error_key: true
+  tags: ['ugc_api']
+
 output.logstash:
   enabled: true
   hosts: ["logstash:5045"]

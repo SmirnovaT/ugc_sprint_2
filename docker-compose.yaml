@@ -9,6 +9,8 @@ services:
     restart: always
     env_file:
       - .env
+    volumes:
+      - ./logs/:/var/logs/
     expose:
       - 8000
     depends_on:
@@ -56,6 +58,7 @@ services:
     volumes:
       - ./infra/nginx/logs/:/var/log/nginx/:ro
       - ./infra/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./logs/:/var/log/ugc_api/:ro
     command: filebeat -e -strict.perms=false
     depends_on:
       - app

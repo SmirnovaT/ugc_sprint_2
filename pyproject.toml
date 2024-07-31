@@ -25,6 +25,7 @@ wemake-python-styleguide = "^0.19.2"
 sentry-sdk = { extras = ["fastapi"], version = "^2.11.0" }
 motor = "^3.5.1"
 asyncpg = "^0.29.0"
+structlog = "^24.4.0"
 
 [tool.poetry.group.prod]
 optional = true

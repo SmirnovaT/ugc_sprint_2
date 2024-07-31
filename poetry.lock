@@ -1793,6 +1793,57 @@ pygments = ">=2.13.0,<3.0.0"
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
+name = "sentry-sdk"
+version = "2.12.0"
+description = "Python client for Sentry (https://sentry.io)"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "sentry_sdk-2.12.0-py2.py3-none-any.whl", hash = "sha256:7a8d5163d2ba5c5f4464628c6b68f85e86972f7c636acc78aed45c61b98b7a5e"},
+    {file = "sentry_sdk-2.12.0.tar.gz", hash = "sha256:8763840497b817d44c49b3fe3f5f7388d083f2337ffedf008b2cdb63b5c86dc6"},
+]
+
+[package.dependencies]
+certifi = "*"
+fastapi = {version = ">=0.79.0", optional = true, markers = "extra == \"fastapi\""}
+urllib3 = ">=1.26.11"
+
+[package.extras]
+aiohttp = ["aiohttp (>=3.5)"]
+anthropic = ["anthropic (>=0.16)"]
+arq = ["arq (>=0.23)"]
+asyncpg = ["asyncpg (>=0.23)"]
+beam = ["apache-beam (>=2.12)"]
+bottle = ["bottle (>=0.12.13)"]
+celery = ["celery (>=3)"]
+celery-redbeat = ["celery-redbeat (>=2)"]
+chalice = ["chalice (>=1.16.0)"]
+clickhouse-driver = ["clickhouse-driver (>=0.2.0)"]
+django = ["django (>=1.8)"]
+falcon = ["falcon (>=1.4)"]
+fastapi = ["fastapi (>=0.79.0)"]
+flask = ["blinker (>=1.1)", "flask (>=0.11)", "markupsafe"]
+grpcio = ["grpcio (>=1.21.1)", "protobuf (>=3.8.0)"]
+httpx = ["httpx (>=0.16.0)"]
+huey = ["huey (>=2)"]
+huggingface-hub = ["huggingface-hub (>=0.22)"]
+langchain = ["langchain (>=0.0.210)"]
+loguru = ["loguru (>=0.5)"]
+openai = ["openai (>=1.0.0)", "tiktoken (>=0.3.0)"]
+opentelemetry = ["opentelemetry-distro (>=0.35b0)"]
+opentelemetry-experimental = ["opentelemetry-distro"]
+pure-eval = ["asttokens", "executing", "pure-eval"]
+pymongo = ["pymongo (>=3.1)"]
+pyspark = ["pyspark (>=2.4.4)"]
+quart = ["blinker (>=1.1)", "quart (>=0.16.1)"]
+rq = ["rq (>=0.6)"]
+sanic = ["sanic (>=0.8)"]
+sqlalchemy = ["sqlalchemy (>=1.2)"]
+starlette = ["starlette (>=0.19.1)"]
+starlite = ["starlite (>=1.48)"]
+tornado = ["tornado (>=6)"]
+
+[[package]]
 name = "setuptools"
 version = "71.1.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
@@ -1884,6 +1935,23 @@ files = [
 pbr = ">=2.0.0,<2.1.0 || >2.1.0"
 
 [[package]]
+name = "structlog"
+version = "24.4.0"
+description = "Structured Logging for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "structlog-24.4.0-py3-none-any.whl", hash = "sha256:597f61e80a91cc0749a9fd2a098ed76715a1c8a01f73e336b746504d1aad7610"},
+    {file = "structlog-24.4.0.tar.gz", hash = "sha256:b27bfecede327a6d2da5fbc96bd859f114ecc398a6389d664f62085ee7ae6fc4"},
+]
+
+[package.extras]
+dev = ["freezegun (>=0.2.8)", "mypy (>=1.4)", "pretend", "pytest (>=6.0)", "pytest-asyncio (>=0.17)", "rich", "simplejson", "twisted"]
+docs = ["cogapp", "furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "sphinxext-opengraph", "twisted"]
+tests = ["freezegun (>=0.2.8)", "pretend", "pytest (>=6.0)", "pytest-asyncio (>=0.17)", "simplejson"]
+typing = ["mypy (>=1.4)", "rich", "twisted"]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -1921,6 +1989,23 @@ files = [
     {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
     {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
 ]
+
+[[package]]
+name = "urllib3"
+version = "2.2.2"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "urllib3-2.2.2-py3-none-any.whl", hash = "sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472"},
+    {file = "urllib3-2.2.2.tar.gz", hash = "sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168"},
+]
+
+[package.extras]
+brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
+h2 = ["h2 (>=4,<5)"]
+socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
+zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "uvicorn"
@@ -2196,4 +2281,4 @@ typing_extensions = ">=4.0,<5.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "8651c0516046c2ffd239ec2d281e1f866b2951dacfd1577dabce5cc8846d6974"
+content-hash = "d79f611dcb12b1f455dfb24f21af4a143018ef16391e90d61fbec9d0a9966084"

@@ -22,15 +22,23 @@ class LikeService:
 
         try:
             film = await self.mongo_db[self.collection_name].find_one(
-            {'_id': film_id}, )
+            {'_id': str(film_id)}, )
             print("Film: ", film)
             if film is not None:
-                result = film["scores"]#.skip((page_number - 1) * per_page).limit(per_page)
-                print("Result: ", result)
-                if result:
-                    like_list = await result.to_list(length=per_page)
+                start = (page_number - 1) * per_page
+                finish = start + per_page
+                if finish >= len(film["scores"]) and start == 0:
+                    like_list = film["scores"][start:]
+                elif finish >= len(film["scores"]):
+                    like_list = film["scores"][start:]
+                else:
+                    like_list = film["scores"][start:finish]
+                print("Result: ", like_list)
+                if like_list:
                     likes = [Like(**like) for like in like_list]
                     return [l.dict() for l in likes]
+                else:
+                    return []
             else:
                 return []
         except Exception as exc:

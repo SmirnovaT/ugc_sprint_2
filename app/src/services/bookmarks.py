@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
 from starlette.responses import JSONResponse
 
+from src.api.v1.schemas import User, BookmarksForUser
 from src.core.logger import ugc_logger
 from src.db.mongo import get_mongo_db
 
@@ -17,7 +18,7 @@ class UserService:
         self.collection_name = "users"
         self.collection: AsyncIOMotorCollection = self.mongo_db[self.collection_name]
 
-    async def add_bookmark(self, user_id, film_id):
+    async def add_bookmark(self, user_id: str, film_id: str) -> User:
         """Add bookmark for movie"""
 
         user_data = await self.check_if_user_exist(user_id)
@@ -60,7 +61,7 @@ class UserService:
             {"_id": user_id},
         )
 
-    async def delete_bookmark(self, user_id, film_id):
+    async def delete_bookmark(self, user_id: str, film_id: str) -> None:
         """Remove bookmark"""
 
         user_data = await self.check_if_user_exist(user_id)
@@ -94,8 +95,9 @@ class UserService:
                 detail=f"Error while removing bookmark for {user_id}",
             )
 
-    async def get_bookmarks(self, user_id):
+    async def get_bookmarks(self, user_id: str) -> BookmarksForUser:
         """Get bookmarks"""
+
         user_data = await self.check_if_user_exist(user_id)
         if not user_data:
             raise HTTPException(
@@ -105,8 +107,9 @@ class UserService:
         else:
             return await self.mongo_db[self.collection_name].find_one({"_id": user_id})
 
-    async def check_if_user_exist(self, user_id):
+    async def check_if_user_exist(self, user_id: str) -> dict | None:
         """Check if user exists"""
+
         return await self.mongo_db[self.collection_name].find_one({"_id": user_id})
 
 

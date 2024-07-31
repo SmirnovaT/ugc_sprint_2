@@ -43,8 +43,8 @@ class FilmScore(BaseUserEventsModel):
 
 class User(BaseUserEventsModel):
     scores: list[FilmScore] = []
-    bookmarks: list = []
+    bookmarks: list[str] = []
 
 
 class BookmarksForUser(BaseUserEventsModel):
-    bookmarks: list = []
+    bookmarks: list[str] = []

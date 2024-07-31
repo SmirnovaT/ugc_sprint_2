@@ -48,11 +48,11 @@ async def delete_bookmark(
     description="Get bookmarks for user",
     response_description="Received books for the user",
 )
-async def delete_bookmark(
+async def get_bookmark(
     request: Request,
     user_id: str,
     service: UserService = Depends(get_user_service),
-) -> None:
+) -> BookmarksForUser:
     # await check_token_and_role(request, PERMISSIONS["can_get_bookmarks"]))
 
     return await service.get_bookmarks(user_id)

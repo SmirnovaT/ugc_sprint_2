@@ -21,7 +21,8 @@ class BaseUserEventsModel(BaseModel):
 class Like(BaseUserEventsModel):
     user_id: str = Field(..., description="user id")
     score: int
-
+class Like_with_film_id(Like):
+    film_id: str
 
 class Review(BaseUserEventsModel):
     user_id: str = Field(..., description="user id")

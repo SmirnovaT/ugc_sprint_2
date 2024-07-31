@@ -1,3 +1,4 @@
+from datetime import datetime
 from http import HTTPStatus
 from functools import lru_cache
 
@@ -41,30 +42,42 @@ class LikeService:
 
 
 
-    async def add(self, data):
+    async def add(self, like_data):
         """Add like for movie"""
 
-        like_data = jsonable_encoder(data)
-        film_id = like_data["film_id"]
-        user_id = like_data["user_id"]
+        #like_data = jsonable_encoder(data)
+        film_id = like_data.film_id
+        user_id = like_data.user_id
+        score = like_data.score
 
-        is_review_exist = await self.check_if_like_exist(film_id, user_id)
-        if check_if_like_exist:
-            raise HTTPException(
-                status_code=HTTPStatus.CONFLICT,
-                detail=f"Like by user {user_id} for movie {film_id} already exist")
-
-        like = Like(**review_data).dict()
+        film = await self.mongo_db[self.collection_name].find_one(
+            {'_id': film_id}, )
+        if film is None:
+            film = {"_id": film_id, "average_score": score,
+                    "scores": [
+                        { "user_id": user_id, "score": score,
+                          "created_at": datetime.now()
+                          }
+                    ]
+                    }
+        else:
+            summ=0
+            for like in film["scores"]:
+                summ += like["score"]
+                if like["user_id"] == user_id:
+                    raise HTTPException(
+                        status_code=HTTPStatus.CONFLICT,
+                        detail=f"Like by user {user_id} for movie {film_id} already exist")
+            film["average_score"] = summ/ len(film["scores"])
 
         try:
-            new_data = await self.mongo_db[self.collection_name].insert_one(like)
+            new_data = await self.mongo_db[self.collection_name].insert_one(film)
         except Exception as exc:
             ugc_logger.error(f"Error while adding review by {user_id} for movie {film_id}: {exc}")
 
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
                 detail=f"Error while adding review by {user_id} for movie {film_id}")
-
         return await self.mongo_db[self.collection_name].find_one({'_id': new_data.inserted_id})
 
 @lru_cache()

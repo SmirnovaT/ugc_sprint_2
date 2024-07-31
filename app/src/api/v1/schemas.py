@@ -18,13 +18,17 @@ class BaseUserEventsModel(BaseModel):
 
 
 class Like(BaseUserEventsModel):
-    user_id: str
+    user_id: str = Field(..., description="user id")
     score: int
 
 
-class Review(BaseUserEventsModel):
-    user_id: str
+class Like_with_film_id(Like):
     film_id: str
+
+
+class Review(BaseUserEventsModel):
+    user_id: str = Field(..., description="user id")
+    film_id: str = Field(..., description="film id")
     text: str
     user_score: int
 
@@ -48,3 +52,8 @@ class User(BaseUserEventsModel):
 
 class BookmarksForUser(BaseUserEventsModel):
     bookmarks: list[str] = []
+
+class Film(BaseModel):
+    _id: str
+    average_score: float
+    scores: list[Like]

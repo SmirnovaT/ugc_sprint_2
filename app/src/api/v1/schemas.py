@@ -18,8 +18,8 @@ class BaseUserEventsModel(BaseModel):
 
 
 class Like(BaseUserEventsModel):
-    user_id: str | None
-    score: int | None
+    user_id: str
+    score: int
 
 
 class Review(BaseUserEventsModel):
@@ -47,4 +47,4 @@ class User(BaseUserEventsModel):
 
 
 class BookmarksForUser(BaseUserEventsModel):
-    bookmarks: list | None = None
+    bookmarks: list = []

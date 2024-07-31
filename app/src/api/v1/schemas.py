@@ -52,3 +52,8 @@ class User(BaseUserEventsModel):
 
 class BookmarksForUser(BaseUserEventsModel):
     bookmarks: list[str] = []
+
+class Film(BaseModel):
+    _id: str
+    average_score: float
+    scores: list[Like]

@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from src.api.v1.schemas import Like, Pagination
+from src.api.v1.schemas import Like, Like_with_film_id, Film, Pagination
 from src.core.logger import ugc_logger
 from src.db.mongo import get_mongo_db
 
@@ -18,7 +18,7 @@ class LikeService:
         self.mongo_db = mongo_db
         self.collection_name = "films"
 
-    async def get(self, film_id, page_number: int = 1, per_page: int = 50):
+    async def get(self, film_id: str, page_number: int = 1, per_page: int = 50) -> list[Like]:
         """Get all likes for a film"""
 
         try:
@@ -50,10 +50,9 @@ class LikeService:
                 detail=f"Error while getting likes",
             )
 
-    async def add(self, like_data):
+    async def add(self, like_data: Like_with_film_id) -> Film:
         """Add like for movie"""
 
-        # like_data = jsonable_encoder(data)
         film_id = like_data.film_id
         user_id = like_data.user_id
         score = like_data.score
@@ -114,7 +113,7 @@ class LikeService:
                     detail=f"Error while adding like by {user_id} for movie {film_id}",
                 )
 
-    async def update(self, like_data):
+    async def update(self, like_data: Like_with_film_id) -> Film:
         """Add like for movie"""
 
         # like_data = jsonable_encoder(data)
@@ -158,7 +157,7 @@ class LikeService:
                     detail=f"Error while adding like by {user_id} for movie {film_id}",
                 )
 
-    async def delete(self, like_data):
+    async def delete(self, like_data) -> Film:
         """Add like for movie"""
 
         # like_data = jsonable_encoder(data)
@@ -205,5 +204,5 @@ class LikeService:
 
 
 @lru_cache()
-def get_like_service():
+def get_like_service() -> LikeService:
     return LikeService(get_mongo_db())

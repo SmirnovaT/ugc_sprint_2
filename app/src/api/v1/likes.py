@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from src.api.v1.schemas import Like, Like_with_film_id
+from src.api.v1.schemas import Like, Like_with_film_id, Film
 from src.services.likes import LikeService, get_like_service
 from src.utils.pagination import Paginator
 
@@ -19,19 +19,19 @@ async def get_likes(
 @router.post("/")
 async def add_like(
     like: Like_with_film_id, service: LikeService = Depends(get_like_service)
-):
+) -> Film:
     return await service.add(like)
 
 
 @router.put("/")
 async def update_like(
     like: Like_with_film_id, service: LikeService = Depends(get_like_service)
-):
+) -> Film:
     return await service.update(like)
 
 
 @router.delete("/")
 async def delete_like(
     like: Like_with_film_id, service: LikeService = Depends(get_like_service)
-):
+) -> Film:
     return await service.delete(like)

@@ -4,6 +4,8 @@ from os import makedirs
 
 import structlog
 
+from src.core.config import settings
+
 
 def configure_logger(enable_json_logs: bool = False):
     timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
@@ -27,8 +29,7 @@ def configure_logger(enable_json_logs: bool = False):
         processors=shared_processors
         + [structlog.stdlib.ProcessorFormatter.wrap_for_formatter],
         logger_factory=structlog.stdlib.LoggerFactory(),
-        # call log with await syntax in thread pool executor
-        wrapper_class=structlog.stdlib.AsyncBoundLogger,
+        wrapper_class=structlog.BoundLogger,
         cache_logger_on_first_use=True,
     )
 
@@ -38,9 +39,8 @@ def configure_logger(enable_json_logs: bool = False):
         else structlog.dev.ConsoleRenderer(colors=True)
     )
 
-    log_dir = "../logs/"
-    log_file = log_dir + "app.log"
-    makedirs(log_dir, exist_ok=True)
+    log_file = settings.log.file_path + settings.log.file_name
+    makedirs(settings.log.file_path, exist_ok=True)
 
     LOGGING = {
         "version": 1,
@@ -75,8 +75,8 @@ def configure_logger(enable_json_logs: bool = False):
                 "class": "logging.handlers.RotatingFileHandler",
                 "formatter": "json",
                 "filename": log_file,
-                "maxBytes": 100_1000,
-                "backupCount": 3,
+                "maxBytes": settings.log.max_bytes,
+                "backupCount": settings.log.backup_count,
                 "encoding": "utf-8",
             },
             "default": {

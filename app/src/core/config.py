@@ -9,6 +9,14 @@ class MongoSettings(BaseModel):
 
     url: str = "mongodb://localhost:27017"
 
+class LogSettings(BaseModel):
+    """Logging settings"""
+
+    max_bytes: int = 100_000
+    backup_count: int = 3
+    file_name: str = "app.log"
+    file_path: str = "./logs/"
+
 
 class Settings(BaseSettings):
     """Project settings"""
@@ -26,6 +34,8 @@ class Settings(BaseSettings):
 
     sentry_sdk_dsn: str
 
+    log: LogSettings = LogSettings()
+
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parent.parent.parent.parent / ".env",
         extra="ignore",
@@ -39,3 +49,4 @@ def _get_settings() -> Settings:
 
 
 settings = _get_settings()
+print(settings)

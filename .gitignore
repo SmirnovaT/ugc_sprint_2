@@ -27,3 +27,5 @@ coverage.xml
 
 infra/esdata
 infra/nginx/logs
+
+app/logs

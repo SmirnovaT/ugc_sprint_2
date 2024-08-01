@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./logs/:/var/logs/
+      - ./app/logs/:/opt/app/logs/
     expose:
       - 8000
     depends_on:
@@ -44,7 +44,7 @@ services:
       - xpack.security.enabled=false
 
     volumes:
-      - ./infra/esdata:/usr/share/elasticsearch/data
+      - log_es_data:/usr/share/elasticsearch/data
 
   kibana:
     image: kibana:8.10.2
@@ -58,7 +58,7 @@ services:
     volumes:
       - ./infra/nginx/logs/:/var/log/nginx/:ro
       - ./infra/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./logs/:/var/log/ugc_api/:ro
+      - ./app/logs/:/var/log/ugc_api/:ro
     command: filebeat -e -strict.perms=false
     depends_on:
       - app
@@ -68,3 +68,6 @@ services:
       - kibana
     links:
       - logstash
+
+volumes:
+  log_es_data:

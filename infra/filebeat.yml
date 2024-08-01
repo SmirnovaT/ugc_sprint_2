@@ -12,11 +12,19 @@ filebeat.inputs:
   enabled: true
   paths:
     - /var/log/ugc_api/*
-  json:
-    keys_under_root: true
-    add_error_key: true
+  parsers:
+    - ndjson:
+      overwrite_keys: true 
+      add_error_key: true 
+      expand_keys: true 
   tags: ['ugc_api']
 
 output.logstash:
   enabled: true
   hosts: ["logstash:5045"]
+
+processors: 
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~

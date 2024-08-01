@@ -32,7 +32,14 @@ docker compose exec mongos1 ./mongo-init.sh
 2. docker-compose up --build
 
 ```
-____________________________________________________________________________
+
+### Кибана
+
+Перед просмотром логов в кибане нужно создать соответсвующие data views. Логи приложений, при наличии тегов, пишутся в раздельные индексы Elasticsearch (см. `./infra/filebeat.yml`) 
+
+
+### Результаты тестирования DB
+
 [Результаты тестирования MongoDB](research/mongo_db/result.md)
 
 [Результаты тестирования Postgres](research/check_postgres/result.md)

@@ -1,12 +1,12 @@
-from http import HTTPStatus
 from functools import lru_cache
+from http import HTTPStatus
 
 from bson.objectid import ObjectId
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from src.api.v1.schemas import ReviewFromDB, Review
+from src.api.v1.schemas import Review, ReviewFromDB, ReviewIn
 from src.core.logger import ugc_logger
 from src.db.mongo import get_mongo_db
 
@@ -34,20 +34,19 @@ class ReviewService:
 
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while getting reviews",
+                detail="Error while getting reviews",
             )
 
         reviews_list = await reviews.to_list(length=per_page)
         reviews_from_db = [ReviewFromDB(**review) for review in reviews_list]
 
-        return [r.dict() for r in reviews_from_db]
+        return reviews_from_db
 
-    async def add(self, data: Review) -> ReviewFromDB:
+    async def add(self, user_id: str, data: ReviewIn) -> ReviewFromDB:
         """Add review for movie"""
 
-        review_data = jsonable_encoder(data)
-        film_id = review_data["film_id"]
-        user_id = review_data["user_id"]
+        review = Review(**data.model_dump(), user_id=user_id)
+        film_id = review.film_id
 
         is_review_exist = await self.check_if_review_exist(film_id, user_id)
         if is_review_exist:
@@ -56,7 +55,7 @@ class ReviewService:
                 detail=f"Review by user {user_id} for movie {film_id} already exist",
             )
 
-        review_data_for_db = ReviewFromDB(**review_data).dict()
+        review_data_for_db = ReviewFromDB(**review.model_dump()).model_dump()
 
         try:
             new_data = await self.mongo_db[self.collection_name].insert_one(

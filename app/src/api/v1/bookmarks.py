@@ -5,7 +5,7 @@ from src.core.constants import PERMISSIONS
 from src.services.bookmarks import UserService, get_user_service
 from src.utils.jwt_and_roles import (
     AccessTokenPayload,
-    RoleChecker,
+    CheckRolesDep,
     verify_access_token_dep,
 )
 
@@ -18,7 +18,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     description="Add user bookmark to the film",
     response_description="Added user bookmark to the film",
-    dependencies=[Depends(RoleChecker(roles=PERMISSIONS["can_add_bookmark"]))],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS["can_add_bookmark"]))],
 )
 async def add_bookmark(
     film_id: str,
@@ -33,7 +33,7 @@ async def add_bookmark(
     status_code=status.HTTP_204_NO_CONTENT,
     description="Remove bookmark",
     response_description="Bookmark removed",
-    dependencies=[Depends(RoleChecker(roles=PERMISSIONS["can_delete_bookmark"]))],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS["can_delete_bookmark"]))],
 )
 async def delete_bookmark(
     film_id: str,
@@ -49,7 +49,7 @@ async def delete_bookmark(
     status_code=status.HTTP_200_OK,
     description="Get bookmarks for user",
     response_description="Received books for the user",
-    dependencies=[Depends(RoleChecker(roles=PERMISSIONS["can_add_bookmark"]))],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS["can_add_bookmark"]))],
 )
 async def get_bookmarks(
     service: UserService = Depends(get_user_service),

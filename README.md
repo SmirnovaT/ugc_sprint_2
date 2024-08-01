@@ -21,7 +21,7 @@ docker compose up --build -d
 
 ### Инициализация mongodb кластера
 ```console
-docker compose exec mongos1 ./mongo-init.sh
+docker compose exec mongos1 bash /opt/init/mongo-init.sh
 ```
 
 ### Запуск тестов

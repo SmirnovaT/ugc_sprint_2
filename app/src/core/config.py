@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 
     mongo: MongoSettings = MongoSettings()
 
-    sentry_sdk_dsn: str
+    sentry_sdk_dsn: str = ""
 
     log: LogSettings = LogSettings()
 

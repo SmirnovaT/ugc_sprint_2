@@ -44,10 +44,8 @@ class LikeService:
                 if like_list:
                     likes = [Like(**like) for like in like_list]
                     return [l.model_dump() for l in likes]
-                else:
-                    return []
-            else:
                 return []
+            return []
         except Exception as exc:
             ugc_logger.error(f"Error while getting likes: {exc}")
 

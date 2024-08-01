@@ -22,7 +22,12 @@ class Like(BaseUserEventsModel):
     score: int
 
 
-class Like_with_film_id(Like):
+class LikeSchemaIn(BaseModel):
+    film_id: str
+    score: int
+
+
+class LikeDeleteSchema(BaseModel):
     film_id: str
 
 

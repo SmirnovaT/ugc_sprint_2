@@ -1,6 +1,17 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
+from utils.jwt_and_roles import (
+    AccessTokenPayload,
+    CheckRolesDep,
+    verify_access_token_dep,
+)
 
-from src.api.v1.schemas import Like, Like_with_film_id, Film
+from src.api.v1.schemas import (
+    Film,
+    Like,
+    LikeDeleteSchema,
+    LikeSchemaIn,
+)
+from src.core.constants import PERMISSIONS, PermissionEnum
 from src.services.likes import LikeService, get_like_service
 from src.utils.pagination import Paginator
 
@@ -16,22 +27,49 @@ async def get_likes(
     return await service.get(film_id, paginator.page, paginator.per_page)
 
 
-@router.post("/")
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    description="Add like the film",
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermissionEnum.CAN_ADD_LIKE]))
+    ],
+)
 async def add_like(
-    like: Like_with_film_id, service: LikeService = Depends(get_like_service)
+    like: LikeSchemaIn,
+    service: LikeService = Depends(get_like_service),
+    access_token: AccessTokenPayload = Depends(verify_access_token_dep),
 ) -> Film:
-    return await service.add(like)
+    return await service.add(access_token.user_id, like)
 
 
-@router.put("/")
+@router.put(
+    "/",
+    status_code=status.HTTP_200_OK,
+    description="Update like of the movie",
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermissionEnum.CAN_UPDATE_LIKE]))
+    ],
+)
 async def update_like(
-    like: Like_with_film_id, service: LikeService = Depends(get_like_service)
+    like: LikeSchemaIn,
+    service: LikeService = Depends(get_like_service),
+    access_token: AccessTokenPayload = Depends(verify_access_token_dep),
 ) -> Film:
-    return await service.update(like)
+    return await service.update(access_token.user_id, like)
 
 
-@router.delete("/")
+@router.delete(
+    "/",
+    status_code=status.HTTP_200_OK,
+    description="Delete like of the movie",
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermissionEnum.CAN_DELETE_LIKE]))
+    ],
+)
 async def delete_like(
-    like: Like_with_film_id, service: LikeService = Depends(get_like_service)
+    like: LikeDeleteSchema,
+    service: LikeService = Depends(get_like_service),
+    access_token: AccessTokenPayload = Depends(verify_access_token_dep),
 ) -> Film:
-    return await service.delete(like)
+    return await service.delete(access_token.user_id, like)

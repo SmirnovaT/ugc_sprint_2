@@ -1,12 +1,16 @@
 from datetime import datetime
-from http import HTTPStatus
 from functools import lru_cache
+from http import HTTPStatus
 
 from fastapi import HTTPException
-from fastapi.encoders import jsonable_encoder
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from src.api.v1.schemas import Like, Like_with_film_id, Film, Pagination
+from src.api.v1.schemas import (
+    Film,
+    Like,
+    LikeDeleteSchema,
+    LikeSchemaIn,
+)
 from src.core.logger import ugc_logger
 from src.db.mongo import get_mongo_db
 
@@ -18,7 +22,9 @@ class LikeService:
         self.mongo_db = mongo_db
         self.collection_name = "films"
 
-    async def get(self, film_id: str, page_number: int = 1, per_page: int = 50) -> list[Like]:
+    async def get(
+        self, film_id: str, page_number: int = 1, per_page: int = 50
+    ) -> list[Like]:
         """Get all likes for a film"""
 
         try:
@@ -37,7 +43,7 @@ class LikeService:
                 print("Result: ", like_list)
                 if like_list:
                     likes = [Like(**like) for like in like_list]
-                    return [l.dict() for l in likes]
+                    return [l.model_dump() for l in likes]
                 else:
                     return []
             else:
@@ -47,14 +53,13 @@ class LikeService:
 
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while getting likes",
+                detail="Error while getting likes",
             )
 
-    async def add(self, like_data: Like_with_film_id) -> Film:
+    async def add(self, user_id: str, like_data: LikeSchemaIn) -> Film:
         """Add like for movie"""
 
         film_id = like_data.film_id
-        user_id = like_data.user_id
         score = like_data.score
 
         film = await self.mongo_db[self.collection_name].find_one(
@@ -113,12 +118,10 @@ class LikeService:
                     detail=f"Error while adding like by {user_id} for movie {film_id}",
                 )
 
-    async def update(self, like_data: Like_with_film_id) -> Film:
-        """Add like for movie"""
+    async def update(self, user_id: str, like_data: LikeSchemaIn) -> Film:
+        """Update movie like"""
 
-        # like_data = jsonable_encoder(data)
         film_id = like_data.film_id
-        user_id = like_data.user_id
         score = like_data.score
 
         film = await self.mongo_db[self.collection_name].find_one(
@@ -132,7 +135,6 @@ class LikeService:
         else:
             summ = 0
             for like in film["scores"]:
-
                 if like["user_id"] == user_id:
                     like["score"] = score
                     summ += score
@@ -157,12 +159,10 @@ class LikeService:
                     detail=f"Error while adding like by {user_id} for movie {film_id}",
                 )
 
-    async def delete(self, like_data) -> Film:
-        """Add like for movie"""
+    async def delete(self, user_id: str, like_data: LikeDeleteSchema) -> Film:
+        """Delete like from the movie"""
 
-        # like_data = jsonable_encoder(data)
         film_id = like_data.film_id
-        user_id = like_data.user_id
 
         film = await self.mongo_db[self.collection_name].find_one(
             {"_id": film_id},
@@ -176,7 +176,6 @@ class LikeService:
             summ = 0
             new_likes_list = []
             for like in film["scores"]:
-
                 if not like["user_id"] == user_id:
                     new_likes_list.append(like)
                     summ += like["score"]

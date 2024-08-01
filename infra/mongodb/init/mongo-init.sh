@@ -14,7 +14,7 @@ rs.initiate({
 })
 EOF
 
-sleep 10
+sleep 5
 
 # иницилизируем replica set первого шарда
 echo "Configuring shard server replica set..."
@@ -42,15 +42,43 @@ rs.initiate({
 })
 EOF
 
-sleep 10
+# функция для попытки подключения шардов к кластеру
+add_shard_with_retry() {
+  local shard=$1
+  local host=$2
+  local max_retries=5
+  local attempt=1
+  local success=0
+
+  while [ $attempt -le $max_retries ]; do
+    echo "Attempt $attempt: Adding shard $shard..."
+    mongosh --host mongos1:27017 <<EOF
+sh.addShard("$shard/$host")
+EOF
+
+    if [ $? -eq 0 ]; then
+      success=1
+      break
+    else
+      echo "Failed to add shard $shard. Retrying in 10 seconds..."
+      sleep 5
+      attempt=$((attempt + 1))
+    fi
+  done
+
+  if [ $success -ne 1 ]; then
+    echo "Failed to add shard $shard after $max_retries attempts. Exiting."
+    exit 1
+  fi
+}
 
 # добавляем шарды в кластер
+add_shard_with_retry "mongors1" "mongors1n1"
+add_shard_with_retry "mongors2" "mongors2n1"
+
+# настраиваем шардироване коллекций
 echo "Adding shards to the cluster..."
 mongosh --host mongos1:27017 <<EOF
-sh.addShard("mongors1/mongors1n1")
-sh.addShard("mongors2/mongors2n1")
-sh.status()
-
 use ugc
 sh.enableSharding("ugc")
 

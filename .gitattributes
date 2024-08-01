@@ -1,1 +1,5 @@
 entrypoint.sh text eol=lf
+mongo-init.sh text eol=lf
+mongo.sh text eol=lf
+commands.sh text eol=lf
+

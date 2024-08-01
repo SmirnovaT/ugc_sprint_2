@@ -16,6 +16,7 @@ class LogSettings(BaseModel):
     backup_count: int = 3
     file_name: str = "app.log"
     file_path: str = "./logs/"
+    enable_json_logs: bool = True
 
 
 class Settings(BaseSettings):
@@ -49,4 +50,3 @@ def _get_settings() -> Settings:
 
 
 settings = _get_settings()
-print(settings)

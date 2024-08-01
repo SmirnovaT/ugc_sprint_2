@@ -8,7 +8,7 @@ from fastapi.responses import ORJSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 
 import src.core.logger
-from src.api.v1 import bookmarks, reviews, likes
+from src.api.v1 import bookmarks, likes, reviews
 from src.core.config import settings
 from src.db import mongo
 

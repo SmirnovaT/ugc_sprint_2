@@ -2,7 +2,6 @@ from http import HTTPStatus
 from urllib.parse import urljoin
 
 import pytest
-
 from test_data.reviews import review_data
 from test_settings import test_settings
 
@@ -12,14 +11,19 @@ REVIEW_URL = urljoin(test_settings.api_url, REVIEW_ENDPOINT)
 pytestmark = pytest.mark.asyncio
 
 
-async def test_review_success(client_session, make_post_request):
-    status, response = await make_post_request(REVIEW_URL, review_data)
+async def test_review_success(client_session, make_admin_post_request):
+    status, response = await make_admin_post_request(REVIEW_URL, review_data)
     assert status == HTTPStatus.CREATED
 
 
-async def test_review_conflict(client_session, make_post_request):
-    await make_post_request(REVIEW_URL, review_data)
+async def test_review_forbidden(client_session, make_post_request):
     status, response = await make_post_request(REVIEW_URL, review_data)
+    assert status == HTTPStatus.FORBIDDEN
+
+
+async def test_review_conflict(client_session, make_admin_post_request):
+    await make_admin_post_request(REVIEW_URL, review_data)
+    status, response = await make_admin_post_request(REVIEW_URL, review_data)
     assert status == HTTPStatus.CONFLICT
 
 

@@ -10,7 +10,7 @@ docker compose up --build -d
 
 ### Запуск приложения для локальной разработки
 ```
-1. cp .env_example .env
+1. cp .env.prod.example .env
 2. python3.12 -m venv venv
 3. source venv/bin/activate
 4. pip3 install poetry
@@ -21,7 +21,7 @@ docker compose up --build -d
 
 ### Инициализация mongodb кластера
 ```console
-docker compose exec mongos1 ./mongo-init.sh
+docker compose exec mongos1 bash /opt/init/mongo-init.sh
 ```
 
 ### Запуск тестов

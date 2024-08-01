@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, status
 
-from src.api.v1.schemas import Review, ReviewFromDB, Pagination
-from src.core.constants import PERMISSIONS
-from src.services.reviews import ReviewService
-from src.services.reviews import get_review_service
-from src.utils.jwt_and_roles import check_token_and_role
+from src.api.v1.schemas import ReviewFromDB, ReviewIn
+from src.core.constants import PERMISSIONS, PermEnum
+from src.services.reviews import ReviewService, get_review_service
+from src.utils.jwt_and_roles import (
+    AccessTokenPayload,
+    CheckRolesDep,
+    verify_access_token_dep,
+)
 from src.utils.pagination import Paginator
 
 router = APIRouter()
@@ -30,15 +33,14 @@ async def get_reviews(
     status_code=status.HTTP_201_CREATED,
     description="Add review for the film",
     response_description="Added review for the film",
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_ADD_REVIEW]))],
 )
 async def add_review(
-    request: Request,
-    review: Review,
+    review: ReviewIn,
     service: ReviewService = Depends(get_review_service),
+    access_token: AccessTokenPayload = Depends(verify_access_token_dep),
 ) -> ReviewFromDB:
-    # await check_token_and_role(request, PERMISSIONS["can_add_review"])
-
-    return await service.add(review)
+    return await service.add(user_id=access_token.user_id, data=review)
 
 
 @router.put(
@@ -47,15 +49,15 @@ async def add_review(
     status_code=status.HTTP_201_CREATED,
     description="Update review for the film",
     response_description="Update user review to the film",
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_UPDATE_REVIEW]))
+    ],
 )
 async def update_review(
-    request: Request,
     review_id: str,
     review: ReviewFromDB,
     service: ReviewService = Depends(get_review_service),
 ) -> ReviewFromDB:
-    # await check_token_and_role(request, PERMISSIONS["can_update_review"])
-
     return await service.update(review_id, review)
 
 
@@ -64,12 +66,12 @@ async def update_review(
     status_code=status.HTTP_204_NO_CONTENT,
     description="Remove review for the film",
     response_description="Removed review for the film",
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_REMOVE_REVIEW]))
+    ],
 )
 async def remove_review(
-    request: Request,
     review_id: str,
     service: ReviewService = Depends(get_review_service),
 ) -> None:
-    # await check_token_and_role(request, PERMISSIONS["can_remove_review"])
-
     await service.remove(review_id)

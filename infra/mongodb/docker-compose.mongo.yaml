@@ -91,7 +91,7 @@ services:
     expose:
       - "27017"
     volumes:
-      - ./mongo-init.sh:/mongo-init.sh
+      - ./init/:/opt/init/
 
   mongos2:
     container_name: mongos2

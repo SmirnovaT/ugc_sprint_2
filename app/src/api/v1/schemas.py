@@ -1,9 +1,6 @@
 from datetime import datetime
 
-import orjson
 from pydantic import BaseModel, Field
-
-from src.utils.json import orjson_dumps
 
 
 class Pagination(BaseModel):
@@ -11,13 +8,7 @@ class Pagination(BaseModel):
     page: int
 
 
-class BaseUserEventsModel(BaseModel):
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
-
-
-class Like(BaseUserEventsModel):
+class Like(BaseModel):
     user_id: str = Field(..., description="user id")
     score: int
 
@@ -31,13 +22,13 @@ class LikeDeleteSchema(BaseModel):
     film_id: str
 
 
-class ReviewIn(BaseUserEventsModel):
+class ReviewIn(BaseModel):
     film_id: str = Field(..., description="film id")
     text: str
     user_score: int
 
 
-class Review(BaseUserEventsModel):
+class Review(BaseModel):
     user_id: str = Field(..., description="user id")
     film_id: str = Field(..., description="film id")
     text: str
@@ -50,18 +41,18 @@ class ReviewFromDB(Review):
     likes: list[Like] = []
 
 
-class FilmScore(BaseUserEventsModel):
+class FilmScore(BaseModel):
     film_id: str
     score: int
     created_at: datetime = Field(default_factory=datetime.now)
 
 
-class User(BaseUserEventsModel):
+class User(BaseModel):
     scores: list[FilmScore] = []
     bookmarks: list[str] = []
 
 
-class BookmarksForUser(BaseUserEventsModel):
+class BookmarksForUser(BaseModel):
     bookmarks: list[str] = []
 
 

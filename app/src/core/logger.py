@@ -109,4 +109,4 @@ def configure_logger(enable_json_logs: bool = False):
 
 
 configure_logger(enable_json_logs=True)
-ugc_logger = structlog.get_logger()
+ugc_logger: structlog.BoundLogger = structlog.get_logger()

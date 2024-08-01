@@ -1,9 +1,4 @@
 from fastapi import APIRouter, Depends, status
-from utils.jwt_and_roles import (
-    AccessTokenPayload,
-    CheckRolesDep,
-    verify_access_token_dep,
-)
 
 from src.api.v1.schemas import (
     Film,
@@ -11,8 +6,13 @@ from src.api.v1.schemas import (
     LikeDeleteSchema,
     LikeSchemaIn,
 )
-from src.core.constants import PERMISSIONS, PermissionEnum
+from src.core.constants import PERMISSIONS, PermEnum
 from src.services.likes import LikeService, get_like_service
+from src.utils.jwt_and_roles import (
+    AccessTokenPayload,
+    CheckRolesDep,
+    verify_access_token_dep,
+)
 from src.utils.pagination import Paginator
 
 router = APIRouter()
@@ -31,9 +31,7 @@ async def get_likes(
     "/",
     status_code=status.HTTP_201_CREATED,
     description="Add like the film",
-    dependencies=[
-        Depends(CheckRolesDep(roles=PERMISSIONS[PermissionEnum.CAN_ADD_LIKE]))
-    ],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_ADD_LIKE]))],
 )
 async def add_like(
     like: LikeSchemaIn,
@@ -47,9 +45,7 @@ async def add_like(
     "/",
     status_code=status.HTTP_200_OK,
     description="Update like of the movie",
-    dependencies=[
-        Depends(CheckRolesDep(roles=PERMISSIONS[PermissionEnum.CAN_UPDATE_LIKE]))
-    ],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_UPDATE_LIKE]))],
 )
 async def update_like(
     like: LikeSchemaIn,
@@ -63,9 +59,7 @@ async def update_like(
     "/",
     status_code=status.HTTP_200_OK,
     description="Delete like of the movie",
-    dependencies=[
-        Depends(CheckRolesDep(roles=PERMISSIONS[PermissionEnum.CAN_DELETE_LIKE]))
-    ],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_REMOVE_LIKE]))],
 )
 async def delete_like(
     like: LikeDeleteSchema,

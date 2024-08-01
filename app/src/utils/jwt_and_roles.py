@@ -3,7 +3,7 @@ from http import HTTPStatus
 from typing import Annotated
 
 import jwt
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi.exceptions import HTTPException
 from fastapi.security import APIKeyCookie
 from pydantic import BaseModel, ValidationError
@@ -93,19 +93,3 @@ async def validate_token(token: str) -> dict:
         )
 
     return decoded_token
-
-
-async def check_token_and_role(request: Request, roles: list) -> dict:
-    access_token = request.cookies.get("access_token")
-    if not access_token:
-        raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED,
-            detail="В cookies отсутствует access token",
-        )
-
-    decoded_token = await validate_token(access_token)
-    if decoded_token.get("user_role") not in roles:
-        raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN,
-            detail="Нет прав для совершения действия",
-        )

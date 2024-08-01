@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
 from src.api.v1.schemas import ReviewFromDB, ReviewIn
-from src.core.constants import PERMISSIONS
+from src.core.constants import PERMISSIONS, PermEnum
 from src.services.reviews import ReviewService, get_review_service
 from src.utils.jwt_and_roles import (
     AccessTokenPayload,
@@ -33,7 +33,7 @@ async def get_reviews(
     status_code=status.HTTP_201_CREATED,
     description="Add review for the film",
     response_description="Added review for the film",
-    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS["can_add_review"]))],
+    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_ADD_REVIEW]))],
 )
 async def add_review(
     review: ReviewIn,
@@ -49,7 +49,9 @@ async def add_review(
     status_code=status.HTTP_201_CREATED,
     description="Update review for the film",
     response_description="Update user review to the film",
-    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS["can_update_review"]))],
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_UPDATE_REVIEW]))
+    ],
 )
 async def update_review(
     review_id: str,
@@ -64,7 +66,9 @@ async def update_review(
     status_code=status.HTTP_204_NO_CONTENT,
     description="Remove review for the film",
     response_description="Removed review for the film",
-    dependencies=[Depends(CheckRolesDep(roles=PERMISSIONS["can_remove_review"]))],
+    dependencies=[
+        Depends(CheckRolesDep(roles=PERMISSIONS[PermEnum.CAN_REMOVE_REVIEW]))
+    ],
 )
 async def remove_review(
     review_id: str,

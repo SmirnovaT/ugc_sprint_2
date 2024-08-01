@@ -24,3 +24,8 @@ coverage.xml
 *.cover
 *.py,cover
 .pytest_cache/
+
+infra/esdata
+infra/nginx/logs
+
+app/logs

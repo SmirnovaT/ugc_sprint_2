@@ -1,14 +1,15 @@
-from http import HTTPStatus
 from functools import lru_cache
+from http import HTTPStatus
 
+import structlog
 from fastapi import HTTPException
-from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
+from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
 from starlette.responses import JSONResponse
 
-from src.api.v1.schemas import User, BookmarksForUser
-from src.core.logger import ugc_logger
+from src.api.v1.schemas import BookmarksForUser, User
 from src.db.mongo import get_mongo_db
 
+ugc_logger = structlog.get_logger()
 
 class UserService:
     """Service for interacting with User"""

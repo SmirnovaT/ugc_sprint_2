@@ -9,7 +9,65 @@ services:
     restart: always
     env_file:
       - .env
+    volumes:
+      - ./app/logs/:/opt/app/logs/
     expose:
       - 8000
     depends_on:
       - mongos1
+
+  nginx:
+    image: nginx:1.19.2
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./infra/nginx/logs/:/var/log/nginx/
+    depends_on:
+      - app
+    expose:
+      - 80
+
+  logstash:
+    image: logstash:8.10.2
+    environment:
+      XPACK_MONITORING_ENABLED: "false"
+      ES_HOST: "elasticsearch:9200"
+
+    volumes:
+      - ./infra/logstash.conf:/config/logstash.conf:ro
+    command: logstash -f /config/logstash.conf
+
+  elasticsearch:
+    image: elasticsearch:8.10.2
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+
+    volumes:
+      - log_es_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: kibana:8.10.2
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+  filebeat:
+    image: elastic/filebeat:8.10.2
+    volumes:
+      - ./infra/nginx/logs/:/var/log/nginx/:ro
+      - ./infra/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./app/logs/:/var/log/ugc_api/:ro
+    command: filebeat -e -strict.perms=false
+    depends_on:
+      - app
+      - nginx
+      - logstash
+      - elasticsearch
+      - kibana
+    links:
+      - logstash
+
+volumes:
+  log_es_data:

@@ -7,7 +7,7 @@ import structlog
 from src.core.config import settings
 
 
-def configure_logger(enable_json_logs: bool = False):
+def configure_logger():
     timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
 
     shared_processors = [
@@ -35,7 +35,7 @@ def configure_logger(enable_json_logs: bool = False):
 
     logs_render = (
         structlog.processors.JSONRenderer()
-        if enable_json_logs
+        if settings.log.enable_json_logs
         else structlog.dev.ConsoleRenderer(colors=True)
     )
 
@@ -108,5 +108,5 @@ def configure_logger(enable_json_logs: bool = False):
     logging.config.dictConfig(LOGGING)
 
 
-configure_logger(enable_json_logs=True)
+configure_logger()
 ugc_logger: structlog.BoundLogger = structlog.get_logger()

@@ -30,7 +30,6 @@ class Settings(BaseSettings):
     page_size: int = 50
 
     public_key: str
-    private_key: str
 
     mongo: MongoSettings = MongoSettings()
 

@@ -18,7 +18,10 @@ from src.utils.pagination import Paginator
 router = APIRouter()
 
 
-@router.get(path="/")
+@router.get(path="/",
+    status_code=status.HTTP_200_OK,
+    description="Get all likes for the movie",
+)
 async def get_likes(
     film_id,
     paginator: Paginator = Depends(),
